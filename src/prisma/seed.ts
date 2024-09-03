@@ -25,6 +25,7 @@ const notificationTypes: INotificationType[] = [
 ];
 
 async function main() {
+  await prisma.notification.deleteMany({});
   await prisma.notificationType.deleteMany({});
 
   const records = await prisma.notificationType.createMany({
