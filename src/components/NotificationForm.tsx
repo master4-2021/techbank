@@ -38,6 +38,11 @@ const schema = yup
   })
   .required();
 
+const defaultValues = {
+  type: NotificationTypeEnum.SYSTEM,
+  notificationValue: "",
+};
+
 export default function NotificationForm({ notificationTypes }: Props) {
   const { setNotifications, notifications } = useNotificationContext();
   const {
@@ -45,16 +50,15 @@ export default function NotificationForm({ notificationTypes }: Props) {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<NotificationFormInput>({
-    defaultValues: {
-      type: NotificationTypeEnum.SYSTEM,
-      notificationValue: "",
-    },
+    defaultValues,
     resolver: yupResolver(schema),
   });
   const mutation = trpc.notification.create.useMutation({
     onSuccess: (data) => {
       setNotifications([...notifications, data as INotification]);
+      reset(defaultValues);
     },
   });
 
