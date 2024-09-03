@@ -2,12 +2,19 @@
 
 import { trpc } from "@/libs/trpc";
 import { INotification, INotificationType } from "@/libs/types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type NotificationContext = {
   notifications: INotification[];
   notificationTypes: INotificationType[];
   setNotifications: (data: INotification[]) => void;
+  unreadNo: number;
 };
 
 const Context = createContext<NotificationContext | undefined>(undefined);
@@ -31,6 +38,7 @@ export const NotificationProvider = ({
   const [notificationTypes, setNotificationTypes] = useState<
     INotificationType[]
   >([]);
+  const [unreadNo, setUnreadNo] = useState(0);
 
   const notificationQuery = trpc.notification.getAll.useQuery();
   const notificationTypeQuery = trpc.notificationType.useQuery();
@@ -56,10 +64,18 @@ export const NotificationProvider = ({
     }
   }, [notificationQuery.error, notificationTypeQuery.error]);
 
+  useEffect(() => {
+    const unreadNotifications = notifications.filter((i) => !i.isRead);
+    if (unreadNotifications.length !== unreadNo) {
+      setUnreadNo(unreadNotifications.length);
+    }
+  }, [notifications, unreadNo]);
+
   const contextValues = {
     notifications,
     notificationTypes,
     setNotifications,
+    unreadNo,
   };
 
   return <Context.Provider value={contextValues}>{children}</Context.Provider>;

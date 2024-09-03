@@ -7,6 +7,7 @@ import { trpc } from "@/libs/trpc";
 import { INotificationType } from "@/libs/types";
 import { BellIcon } from "@radix-ui/react-icons";
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -18,13 +19,17 @@ import {
 } from "@radix-ui/themes";
 
 export default function Home() {
-  const { notifications, notificationTypes } = useNotificationContext();
+  const { notifications, notificationTypes, unreadNo } =
+    useNotificationContext();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Button variant="soft" color="cyan">
-            <BellIcon /> Notifications
+            <BellIcon />{" "}
+            {unreadNo ? <Badge color="crimson">{unreadNo}</Badge> : null}{" "}
+            Notifications
             <DropdownMenu.TriggerIcon />
           </Button>
         </DropdownMenu.Trigger>
@@ -33,7 +38,7 @@ export default function Home() {
             {notifications?.length ? (
               notifications?.map((item) => (
                 // <DropdownMenu.Item className="h-fit" key={item.id}>
-                  <NotificationItem key={item.id} data={item} />
+                <NotificationItem key={item.id} data={item} />
                 // </DropdownMenu.Item>
               ))
             ) : (
