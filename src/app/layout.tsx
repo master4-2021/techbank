@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import TrpcProvider from "@/components/TrpcProvider";
 import "./globals.css";
+import "@radix-ui/themes/styles.css";
+import { Theme } from "@radix-ui/themes";
+import { NotificationProvider } from "@/components/NotificationProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <TrpcProvider>
+      <NotificationProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <Theme>{children}</Theme>
+          </body>
+        </html>
+      </NotificationProvider>
+    </TrpcProvider>
   );
 }
